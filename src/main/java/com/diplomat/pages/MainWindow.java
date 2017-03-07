@@ -50,7 +50,9 @@ public class MainWindow extends JFrame {
 				try {
 					String databasePath = preferences.getFile(PreferencePanel.DATABASE).getAbsolutePath();
 					String testFilePath = preferences.getFile(PreferencePanel.TEST_FILE).getAbsolutePath();
-					runTests(databasePath, testFilePath, true);
+					boolean isCartCalc = !preferences.getCart();
+					log.info("Started Test with params: \r\nDatabase: " + databasePath + "\r\nTest File: " + testFilePath + "\r\nIs Cart Calculation: " + isCartCalc);
+					runTests(databasePath, testFilePath, isCartCalc);
 				} catch (Exception e) {
 					log.error("Something went wrong, please make sure files are correct", e);
 				}
