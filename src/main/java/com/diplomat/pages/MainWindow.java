@@ -1,5 +1,7 @@
 package com.diplomat.pages;
 
+import static com.diplomat.main.Main.runTests;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,19 +13,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.diplomat.main.Main.*;
+import com.diplomat.log.TxtAreaAppender;
 
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 	private PreferencePanel preferences;
 	private static JTextArea mainTextArea = new JTextArea();
+	private static JScrollPane mainScroll;
 
 	public MainWindow() {
 		super();
@@ -38,21 +42,28 @@ public class MainWindow extends JFrame {
 		getContentPane().add(executeButton(),BorderLayout.SOUTH);
 	}
 	private JScrollPane mainScroll(){
-		mainTextArea.setEnabled(false);
 		mainTextArea.setDisabledTextColor(Color.BLACK);
 		mainTextArea.setFont(new Font("monospaced", Font.PLAIN, 14));
-		return new JScrollPane(mainTextArea);
+		mainScroll = new JScrollPane(mainTextArea);
+		return mainScroll;
 	}
 	private JButton executeButton(){
 		JButton execute = new JButton("Execute");
 		execute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent action) {
 				try {
-					String databasePath = preferences.getFile(PreferencePanel.DATABASE).getAbsolutePath();
-					String testFilePath = preferences.getFile(PreferencePanel.TEST_FILE).getAbsolutePath();
-					boolean isCartCalc = !preferences.getCart();
+					final String databasePath = preferences.getFile(PreferencePanel.DATABASE).getAbsolutePath();
+					final String testFilePath = preferences.getFile(PreferencePanel.TEST_FILE).getAbsolutePath();
+					final boolean isCartCalc = !preferences.getCart();
 					log.info("Started Test with params: \r\nDatabase: " + databasePath + "\r\nTest File: " + testFilePath + "\r\nIs Cart Calculation: " + isCartCalc);
-					runTests(databasePath, testFilePath, isCartCalc);
+					new Thread() {
+						public void run() {
+							runTests(databasePath, testFilePath, isCartCalc);
+							appendMainText("Final Results:\r\nNumber Of Tests: " + TxtAreaAppender.resultCounter + "\r\nErrors: " + TxtAreaAppender.errorCounter);
+							TxtAreaAppender.resultCounter = 0;
+							TxtAreaAppender.errorCounter = 0;
+						}
+					}.start();
 				} catch (Exception e) {
 					log.error("Something went wrong, please make sure files are correct", e);
 				}
@@ -62,6 +73,13 @@ public class MainWindow extends JFrame {
 	}
 	public static void setMainText(String text){
 		mainTextArea.setText(text);
+		JScrollBar vertical = mainScroll.getVerticalScrollBar();
+		vertical.setValue( vertical.getMaximum() );
+	}
+	public static void appendMainText(String text){
+		mainTextArea.append(text);
+		JScrollBar vertical = mainScroll.getVerticalScrollBar();
+		vertical.setValue( vertical.getMaximum() );
 	}
 	public static String getMainText(){
 		return mainTextArea.getText();
