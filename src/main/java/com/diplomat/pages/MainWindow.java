@@ -25,7 +25,7 @@ import com.diplomat.log.TxtAreaAppender;
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
-	private PreferencePanel preferences;
+	private static PreferencePanel preferences;
 	private static JTextArea mainTextArea = new JTextArea();
 	private static JScrollPane mainScroll;
 
@@ -55,11 +55,11 @@ public class MainWindow extends JFrame {
 					setMainText("");
 					final String databasePath = preferences.getFile(PreferencePanel.DATABASE).getAbsolutePath();
 					final String testFilePath = preferences.getFile(PreferencePanel.TEST_FILE).getAbsolutePath();
-					final boolean isCartCalc = !preferences.getCart();
-					log.info("Started Test with params: \r\nDatabase: " + databasePath + "\r\nTest File: " + testFilePath + "\r\nIs Cart Calculation: " + !isCartCalc);
+					final boolean isCartCalc = preferences.getCart();
+					log.info("Started Test with params: \r\nDatabase: " + databasePath + "\r\nTest File: " + testFilePath + "\r\nIs Cart Calculation: " + isCartCalc);
 					new Thread() {
 						public void run() {
-							runTests(databasePath, testFilePath, isCartCalc);
+							runTests(databasePath, testFilePath, !isCartCalc);
 							appendMainText("Final Results:\r\nNumber Of Tests: " + TxtAreaAppender.resultCounter + "\r\nErrors: " + TxtAreaAppender.errorCounter);
 							TxtAreaAppender.resultCounter = 0;
 							TxtAreaAppender.errorCounter = 0;
@@ -85,5 +85,8 @@ public class MainWindow extends JFrame {
 	}
 	public static String getMainText(){
 		return mainTextArea.getText();
+	}
+	public static boolean isCart() {
+		return preferences.getCart();
 	}
 }
