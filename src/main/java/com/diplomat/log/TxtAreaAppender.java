@@ -8,7 +8,7 @@ import ch.qos.logback.core.AppenderBase;
 public class TxtAreaAppender extends AppenderBase<ILoggingEvent> {
 	private static final String ERROR_STRING = "****ERROR****";
 	private static final String RESULT = "Results:";
-	private String lastResult;
+	public static String lastResult;
 	public static int resultCounter = 0;
 	public static int errorCounter = 0;
 
