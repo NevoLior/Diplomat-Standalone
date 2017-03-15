@@ -21,6 +21,7 @@ public class TxtAreaAppender extends AppenderBase<ILoggingEvent> {
 		else if (event.toString().contains(ERROR_STRING)) {
 			errorCounter++;
 			MainWindow.appendMainText("\r\n" + lastResult + "\r\n" + event);
+			lastResult = MainWindow.isCart() ? "" : lastResult;
 		}
 		else {
 			MainWindow.appendMainText("\r\n" + event);
