@@ -14,16 +14,27 @@ public class TxtAreaAppender extends AppenderBase<ILoggingEvent> {
 
 	@Override
 	protected void append(ILoggingEvent event) {
-		if (event.toString().contains(RESULT)){
-			resultCounter++;
-			lastResult = MainWindow.isCart() ? lastResult + "\r\n" + event.toString() : event.toString();
-		}
-		else if (event.toString().contains(ERROR_STRING)) {
-			errorCounter++;
-			MainWindow.appendMainText("\r\n" + lastResult + "\r\n" + event);
-			lastResult = MainWindow.isCart() ? "" : lastResult;
+		if (MainWindow.errorsOnly()){
+			if (event.toString().contains(RESULT)){
+				resultCounter++;
+				lastResult = MainWindow.isCart() ? lastResult + "\r\n" + event.toString() : event.toString();
+			}
+			else if (event.toString().contains(ERROR_STRING)) {
+				errorCounter++;
+				MainWindow.appendMainText("\r\n" + lastResult + "\r\n" + event);
+				lastResult = MainWindow.isCart() ? "" : lastResult;
+			}
+			else {
+				MainWindow.appendMainText("\r\n" + event);
+			}
 		}
 		else {
+			if (event.toString().contains(RESULT)){
+				resultCounter++;
+			}
+			else if (event.toString().contains(ERROR_STRING)) {
+				errorCounter++;
+			}
 			MainWindow.appendMainText("\r\n" + event);
 		}
 	}

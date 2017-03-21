@@ -28,6 +28,7 @@ public class PreferencePanel extends JPanel {
 	private File testFile;
 	private File database;
 	private boolean cart;
+	private boolean errorsOnly;
 	private final JFileChooser fc = new JFileChooser();
 
 	public PreferencePanel(){
@@ -37,7 +38,15 @@ public class PreferencePanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 		add(fileInput(TEST_FILE, "Test File", new FileNameExtensionFilter("Test File", "xml")), BorderLayout.NORTH);
 		add(fileInput(DATABASE, "Database File", new FileNameExtensionFilter("Database", "db")), BorderLayout.CENTER);
-		add(cartCheckbox(), BorderLayout.SOUTH);
+		add(checkboxs(), BorderLayout.SOUTH);
+	}
+	private JPanel checkboxs(){
+		JPanel returnPanel = new JPanel();
+		returnPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		returnPanel.setLayout(new BorderLayout(0, 0));
+		returnPanel.add(cartCheckbox(), BorderLayout.EAST);
+		returnPanel.add(errorsOnlyCheckbox(), BorderLayout.WEST);
+		return returnPanel;
 	}
 	private JCheckBox cartCheckbox() {
 		JCheckBox checkbox = new JCheckBox("Cart Calculation");
@@ -46,6 +55,17 @@ public class PreferencePanel extends JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 setCart(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+		return checkbox;
+	}
+	private JCheckBox errorsOnlyCheckbox() {
+		JCheckBox checkbox = new JCheckBox("Errors Only");
+		checkbox.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                setErrorsOnly(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
 		return checkbox;
@@ -77,6 +97,12 @@ public class PreferencePanel extends JPanel {
 		returnPanel.add(inputField, BorderLayout.CENTER);
 		returnPanel.add(chooser, BorderLayout.EAST);
 		return returnPanel;
+	}
+	private void setErrorsOnly(boolean selected){
+		this.errorsOnly = selected;
+	}
+	protected boolean getErrorsOnly(){
+		return this.errorsOnly;
 	}
 	private void setCart(boolean selected) {
 		this.cart = selected;

@@ -89,4 +89,7 @@ public class MainWindow extends JFrame {
 	public static boolean isCart() {
 		return preferences.getCart();
 	}
+	public static boolean errorsOnly() {
+		return preferences.getErrorsOnly();
+	}
 }
