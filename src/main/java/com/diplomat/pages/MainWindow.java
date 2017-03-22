@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
 					new Thread() {
 						public void run() {
 							runTests(databasePath, testFilePath, !isCartCalc);
-							appendMainText("Final Results:\r\nNumber Of Tests: " + TxtAreaAppender.resultCounter + "\r\nErrors: " + TxtAreaAppender.errorCounter);
+							appendMainText("\r\nFinal Results:\r\nNumber Of Tests: " + TxtAreaAppender.resultCounter + "\r\nErrors: " + TxtAreaAppender.errorCounter);
 							TxtAreaAppender.resultCounter = 0;
 							TxtAreaAppender.errorCounter = 0;
 							TxtAreaAppender.lastResult = "";
